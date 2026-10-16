@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Calculate keto calories and macros, then generate a one-day meal plan that fits them.">
+  <meta name="theme-color" content="#0e0d0b">
+  <title>Keto Planner — Macro Calculator &amp; Meal Plan</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23110e0a'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23e4b56a' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <a class="brand" href="../">
+        <span class="mark" aria-hidden="true">A</span>
+        <span>
+          <strong>BuiltByAmos</strong>
+          <span>Weekly apps</span>
+        </span>
+      </a>
+      <a class="back" href="../">All apps</a>
+    </header>
+
+    <section class="intro">
+      <p class="eyebrow">01 · Weekly app</p>
+      <h1>Keto Planner</h1>
+      <p class="dek">BMR, TDEE, and a keto split from your stats — then a sample day of food that fits.</p>
+    </section>
+
+    <div class="layout">
+      <form id="calculator" class="panel" novalidate>
+        <div class="pair">
+          <div class="field">
+            <div class="field-label"><span id="sex-label">Sex</span></div>
+            <div class="seg" role="radiogroup" aria-labelledby="sex-label" data-press-group="sex">
+              <button type="button" data-group="sex" data-value="female" aria-pressed="false">Female</button>
+              <button type="button" data-group="sex" data-value="male" aria-pressed="false">Male</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="age">Age</label>
+            <input id="age" name="age" inputmode="numeric" autocomplete="off" placeholder="32" aria-describedby="form-error">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-label">
+            <span id="height-label">Height</span>
+            <div class="seg" role="group" aria-label="Height unit">
+              <button type="button" data-group="height-unit" data-value="imperial" aria-pressed="true">ft / in</button>
+              <button type="button" data-group="height-unit" data-value="metric" aria-pressed="false">cm</button>
+            </div>
+          </div>
+          <div class="height-row" id="height-imperial">
+            <div class="unit-input">
+              <input id="height-ft" inputmode="numeric" autocomplete="off" placeholder="5" aria-label="Feet">
+              <span class="suffix">ft</span>
+            </div>
+            <div class="unit-input">
+              <input id="height-in" inputmode="decimal" autocomplete="off" placeholder="6" aria-label="Inches">
+              <span class="suffix">in</span>
+            </div>
+          </div>
+          <div id="height-metric" hidden>
+            <div class="unit-input">
+              <input id="height-cm" inputmode="decimal" autocomplete="off" placeholder="168" aria-label="Centimeters">
+              <span class="suffix">cm</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-label">
+            <label for="weight" id="weight-label">Weight</label>
+            <div class="seg" role="group" aria-label="Weight unit">
+              <button type="button" data-group="weight-unit" data-value="lb" aria-pressed="true">lb</button>
+              <button type="button" data-group="weight-unit" data-value="kg" aria-pressed="false">kg</button>
+            </div>
+          </div>
+          <input id="weight" inputmode="decimal" autocomplete="off" placeholder="155">
+        </div>
+
+        <div class="field">
+          <label for="activity">Activity</label>
+          <select id="activity">
+            <option value="">Select activity</option>
+          </select>
+          <p id="activity-detail" class="hint">This sets the multiplier on your BMR.</p>
+        </div>
+
+        <div class="field">
+          <div class="field-label"><span id="goal-label">Goal</span></div>
+          <div class="goal" role="radiogroup" aria-labelledby="goal-label">
+            <button type="button" data-group="goal" data-value="lose" aria-pressed="false"><strong>Lose</strong><small>20% deficit</small></button>
+            <button type="button" data-group="goal" data-value="maintain" aria-pressed="false"><strong>Maintain</strong><small>At your TDEE</small></button>
+            <button type="button" data-group="goal" data-value="gain" aria-pressed="false"><strong>Gain</strong><small>10% surplus</small></button>
+          </div>
+        </div>
+
+        <p id="form-error" class="form-error" role="alert"></p>
+        <button class="primary" id="calculate" type="submit">Calculate macros</button>
+      </form>
+
+      <section class="panel" aria-labelledby="results-heading">
+        <h2 id="results-heading" class="sr-only">Results</h2>
+        <div id="results-empty" class="empty-copy">
+          <div class="ring" aria-hidden="true"></div>
+          <div>
+            <p class="eyebrow">Your results</p>
+            <h2>Macros land here.</h2>
+            <p>Add your stats. You’ll get BMR, TDEE, a keto calorie split, and a day of meals scaled to match.</p>
+          </div>
+        </div>
+
+        <div id="results-data" hidden>
+          <div class="results-hero">
+            <div>
+              <p class="eyebrow">Daily target</p>
+              <p class="kcal"><strong id="kcal">—</strong><span>kcal</span></p>
+              <p class="person" id="person-line"></p>
+              <ul class="chips">
+                <li>BMR <strong id="bmr">—</strong></li>
+                <li>TDEE <strong id="tdee">—</strong></li>
+                <li id="goal-chip">—</li>
+              </ul>
+            </div>
+            <div class="donut-wrap">
+              <svg id="donut" viewBox="0 0 160 160" role="img" aria-labelledby="donut-title">
+                <title id="donut-title">Macro split</title>
+                <circle class="track" cx="80" cy="80" r="54"></circle>
+                <circle class="arc" data-arc="fat" cx="80" cy="80" r="54" stroke-dasharray="0 339"></circle>
+                <circle class="arc" data-arc="protein" cx="80" cy="80" r="54" stroke-dasharray="0 339"></circle>
+                <circle class="arc" data-arc="carb" cx="80" cy="80" r="54" stroke-dasharray="0 339"></circle>
+              </svg>
+              <div class="donut-center">
+                <strong id="donut-fat-pct">—</strong>
+                <span>fat</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="macro-stats">
+            <div class="macro-stat">
+              <p class="macro-label"><i class="dot fat"></i> Fat</p>
+              <strong id="fat-g">—<span>g</span></strong>
+              <em id="fat-pct">—</em>
+            </div>
+            <div class="macro-stat">
+              <p class="macro-label"><i class="dot protein"></i> Protein</p>
+              <strong id="protein-g">—<span>g</span></strong>
+              <em id="protein-pct">—</em>
+            </div>
+            <div class="macro-stat">
+              <p class="macro-label"><i class="dot carb"></i> Carbs</p>
+              <strong id="carb-g">—<span>g</span></strong>
+              <em id="carb-pct">—</em>
+            </div>
+          </div>
+          <p class="formula" id="formula"></p>
+          <p class="note" id="extra-note" hidden></p>
+        </div>
+      </section>
+    </div>
+
+    <section class="meals" id="meals" hidden aria-labelledby="meals-heading">
+      <div class="meals-head">
+        <div>
+          <p class="eyebrow">Sample day</p>
+          <h2 id="meals-heading">One day, four plates.</h2>
+        </div>
+        <button class="ghost" id="regenerate" type="button">Regenerate</button>
+      </div>
+      <div class="meal-grid" id="meal-grid"></div>
+      <div class="compare" id="compare" aria-live="polite"></div>
+      <p class="fit" id="fit-line"></p>
+      <p class="food-note">Portions are scaled from a built-in keto food list. Carb grams are net carbs. Figures are approximate.</p>
+    </section>
+
+    <p class="sr-only" id="live" aria-live="polite"></p>
+
+    <footer class="site-footer">
+      <p>Built by <a href="https://x.com/BuiltByAmos" rel="noopener noreferrer">@BuiltByAmos</a> with AI</p>
+      <p>Informational only, not medical advice.</p>
+    </footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
