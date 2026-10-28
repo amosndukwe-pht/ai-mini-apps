@@ -1,5 +1,6 @@
 .DS_Store
 node_modules/
 *.mp4
+!assets/social/onboarding-buddy-demo.mp4
 !assets/social/keto-demo.mp4
 *.webm

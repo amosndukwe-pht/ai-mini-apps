@@ -25,6 +25,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Check onboarding-buddy
+        run: |
+          test -f onboarding-buddy/index.html
+          test -f onboarding-buddy/app.js
+          test -f onboarding-buddy/styles.css
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Build a cited Day 1, Week 1, and Day 30 onboarding plan for a fictional new hire, with owners, deadlines, and the next step.">
+  <meta name="theme-color" content="#0e0d0b">
+  <title>Onboarding Buddy — Day 1 to Day 30</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23110e0a'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23e4b56a' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <a class="brand" href="../">
+        <span class="mark" aria-hidden="true">A</span>
+        <span>
+          <strong>BuiltByAmos</strong>
+          <span>Weekly apps</span>
+        </span>
+      </a>
+      <a class="back" href="../">All apps</a>
+    </header>
+
+    <section class="intro">
+      <p class="eyebrow">05 · Weekly app</p>
+      <h1>Onboarding Buddy</h1>
+      <p class="dek">Pick a new hire. Get a cited Day 1, Week 1, and Day 30 plan with the person to contact, the deadline, and the page to open.</p>
+    </section>
+
+    <p class="sample-flag">
+      <strong>Sample data.</strong>
+      Glean-style search over a fictional onboarding packet for Marlow Pine. This page does not call Glean.
+    </p>
+
+    <div class="profiles" id="profiles" role="radiogroup" aria-label="New hire profile">
+      <button type="button" class="profile" data-profile="amina" aria-pressed="false">
+        <span class="profile-kicker">Works without a key</span>
+        <strong>Amina Okonkwo</strong>
+        <span>Associate, AI Solutions</span>
+        <span>AI Solutions · Riverton office</span>
+        <span>Starts Mon, Nov 2, 2026</span>
+        <span>Manager Nia Okoye</span>
+      </button>
+      <button type="button" class="profile" data-profile="diego" aria-pressed="false">
+        <span class="profile-kicker">Needs a key</span>
+        <strong>Diego Morales</strong>
+        <span>Associate, Customer Solutions</span>
+        <span>Customer Solutions · Remote, United States</span>
+        <span>Starts Mon, Nov 16, 2026</span>
+        <span>Manager Imani Brooks</span>
+      </button>
+      <button type="button" class="profile" data-profile="harper" aria-pressed="false">
+        <span class="profile-kicker">Needs a key</span>
+        <strong>Harper Lin</strong>
+        <span>Associate, Implementation</span>
+        <span>Implementation · Remote, Canada</span>
+        <span>Starts Tue, Dec 1, 2026</span>
+        <span>Manager Adrian Walsh</span>
+      </button>
+    </div>
+
+    <ol class="pipeline" id="pipeline" aria-label="Plan pipeline">
+      <li data-step="search" data-state="idle">
+        <span class="step-index">1</span>
+        <span>
+          <span class="step-name">Search</span>
+          <span class="step-detail" data-detail="search">Glean-style · local</span>
+        </span>
+      </li>
+      <li data-step="owners" data-state="idle">
+        <span class="step-index">2</span>
+        <span>
+          <span class="step-name">Owners</span>
+          <span class="step-detail" data-detail="owners">People and systems</span>
+        </span>
+      </li>
+      <li data-step="claude" data-state="idle">
+        <span class="step-index">3</span>
+        <span>
+          <span class="step-name">Claude</span>
+          <span class="step-detail" data-detail="claude">Sonnet 5.5</span>
+        </span>
+      </li>
+      <li data-step="output" data-state="idle">
+        <span class="step-index">4</span>
+        <span>
+          <span class="step-name" id="output-name">Plan</span>
+          <span class="step-detail" data-detail="output">Checklist</span>
+        </span>
+      </li>
+    </ol>
+
+    <div class="workspace">
+      <div class="controls">
+        <div class="action-row">
+          <button class="primary" id="build-plan" type="button">Build my plan</button>
+          <button class="ghost" id="draft-intro" type="button">Draft intro to my manager</button>
+        </div>
+
+        <details class="key-block" id="key-details">
+          <summary>Anthropic API key <span>blank runs Amina’s demo</span></summary>
+          <div class="key-row">
+            <label class="sr-only" for="api-key">Anthropic API key</label>
+            <input id="api-key" name="api-key" type="password" maxlength="200" autocomplete="off" spellcheck="false" placeholder="sk-ant-…">
+            <button class="ghost small" id="clear-key" type="button">Clear</button>
+          </div>
+          <label class="check" for="remember-key">
+            <input id="remember-key" type="checkbox">
+            <span>Remember on this browser</span>
+          </label>
+        </details>
+
+        <form id="ask-form" novalidate>
+          <div class="ask-row">
+            <label class="sr-only" for="question">Ask about access or an owner</label>
+            <input id="question" name="question" maxlength="240" autocomplete="off" placeholder="Ask about access or an owner" aria-describedby="form-error">
+            <button class="primary" id="ask" type="submit">Ask</button>
+          </div>
+          <div class="chips" role="group" aria-label="Sample questions">
+            <button type="button" data-question="How do I get access to the CRM?">CRM access</button>
+            <button type="button" data-question="Who owns the analytics dashboards?">Dashboards</button>
+            <button type="button" data-question="What is the Riverton office door code?">Door code</button>
+          </div>
+        </form>
+        <p id="form-error" class="form-error" role="alert"></p>
+      </div>
+
+      <section class="panel plan" id="plan-panel" aria-labelledby="plan-heading">
+        <div id="plan-empty" class="empty-copy">
+          <p class="eyebrow">Checklist</p>
+          <h2 id="plan-heading">The first month lands here.</h2>
+          <p>Choose a profile, then build the plan. Every line has someone to contact, a deadline counted from the start date, and the sample page it came from. Amina Okonkwo runs without a key.</p>
+        </div>
+        <div id="plan-data" hidden>
+          <p class="eyebrow" id="plan-kicker">First month</p>
+          <h2 id="plan-title">Plan</h2>
+          <p id="plan-deadline" class="hint"></p>
+          <div class="progress">
+            <div class="progress-track" id="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0" aria-labelledby="progress-label">
+              <div id="progress-bar"></div>
+            </div>
+            <p id="progress-label">0 complete</p>
+          </div>
+          <p id="plan-owners" class="owners-line"></p>
+          <div id="phases"></div>
+          <p id="plan-mode" class="mode"></p>
+        </div>
+      </section>
+
+      <div class="results" id="results-col">
+        <section class="panel answer-panel" id="answer-panel" hidden aria-labelledby="answer-heading">
+          <h2 id="answer-heading" class="sr-only">Answer</h2>
+          <p class="asked" id="asked"></p>
+          <article class="paper" id="answer" tabindex="-1"></article>
+          <p id="answer-mode" class="mode"></p>
+        </section>
+
+        <section class="panel draft-panel" id="draft-panel" hidden aria-labelledby="draft-heading">
+          <p class="eyebrow">Intro note</p>
+          <h2 id="draft-heading">Edit, then copy.</h2>
+          <label class="sr-only" for="draft-text">Intro note to your manager</label>
+          <textarea id="draft-text" rows="6" maxlength="800" spellcheck="true"></textarea>
+          <div class="draft-actions">
+            <button class="primary" id="copy-draft" type="button">Copy</button>
+            <p id="draft-caption">Copy only. Nothing is sent.</p>
+          </div>
+          <p id="draft-cites" class="draft-cites"></p>
+          <p id="draft-mode" class="mode"></p>
+        </section>
+      </div>
+    </div>
+
+    <section class="panel sources-panel" id="sources-panel" aria-labelledby="sources-heading">
+      <div id="sources-empty" class="empty-copy">
+        <p class="eyebrow">Retrieved sources</p>
+        <h2 id="sources-heading">Sources land here.</h2>
+        <p>Ranked sample documents from the onboarding packet. Team match changes the order. It is not an access wall.</p>
+      </div>
+      <div id="sources-data" hidden>
+        <div class="results-head">
+          <div>
+            <p class="eyebrow">Retrieved sources</p>
+            <h2 id="sources-title">Sources</h2>
+          </div>
+          <p id="sources-count" class="count"></p>
+        </div>
+        <ol id="results" class="results" aria-label="Ranked sources"></ol>
+      </div>
+    </section>
+
+    <details class="plug">
+      <summary>How production would use Glean</summary>
+      <p>In production the search step is Glean’s Search API, called with the new hire’s token, so hits stay limited to documents that person can open. The manager, the team, and the system owner come from Glean’s people and ownership data. Number those hits and pass the snippets to Claude with the prompt below, or let Glean’s Chat API draft the plan. This page ranks a bundled corpus in the browser. It does not contact Glean.</p>
+    </details>
+
+    <section class="prompt-wrap" id="prompt-section" hidden aria-label="Request sent to Claude">
+      <details id="prompt-details">
+        <summary>Exact request</summary>
+        <p id="prompt-note" class="hint"></p>
+        <pre id="headers-view" class="code"></pre>
+        <pre id="prompt-view" class="code"></pre>
+      </details>
+    </section>
+
+    <p class="sr-only" id="live" aria-live="polite"></p>
+
+    <footer class="site-footer">
+      <p>Built by <a href="https://x.com/BuiltByAmos" rel="noopener noreferrer">@BuiltByAmos</a> with AI</p>
+      <p>Marlow Pine, Pineboard, and every person here are fictional. A pasted API key stays in this browser. The intro draft is copy only. Nothing is sent.</p>
+    </footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
