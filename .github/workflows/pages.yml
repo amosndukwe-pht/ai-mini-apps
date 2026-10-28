@@ -28,6 +28,12 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
+      - name: Check ask-company
+        run: |
+          test -f ask-company/index.html
+          test -f ask-company/app.js
+          test -f ask-company/styles.css
+
       - name: Prepare site
         run: |
           mkdir -p _site

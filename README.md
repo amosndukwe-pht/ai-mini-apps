@@ -16,6 +16,8 @@ GitHub Pages serves this repo at:
 
 Example: [https://amosndukwe-pht.github.io/ai-mini-apps/keto-planner/](https://amosndukwe-pht.github.io/ai-mini-apps/keto-planner/)
 
+Ask the Company is gallery app 04: [ask-company/](ask-company/), live at https://amosndukwe-pht.github.io/ai-mini-apps/ask-company/. It ranks a fictional sample corpus in the browser, applies a role filter, then asks Claude for an answer that cites those sources or says the documents do not contain it. A pasted Anthropic key stays in the browser and is not part of this repo.
+
 ## Run locally
 
 ```bash

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Ask a fictional company wiki. A role filter hides restricted sample documents, then Claude answers from the sources it can cite.">
+  <meta name="theme-color" content="#0e0d0b">
+  <title>Ask the Company — Search, permissions, cited answer</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23110e0a'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23e4b56a' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <a class="brand" href="../">
+        <span class="mark" aria-hidden="true">A</span>
+        <span>
+          <strong>BuiltByAmos</strong>
+          <span>Weekly apps</span>
+        </span>
+      </a>
+      <a class="back" href="../">All apps</a>
+    </header>
+
+    <section class="intro">
+      <p class="eyebrow">04 · Weekly app</p>
+      <h1>Ask the Company</h1>
+      <p class="dek">Search the sample wiki this role can open. Claude answers from those sources, or says the documents do not contain it.</p>
+    </section>
+
+    <p class="sample-flag">
+      <strong>Sample data.</strong>
+      Glean-style search over fictional documents for Hearthline Systems. This page does not call Glean.
+    </p>
+
+    <div class="sticky-tools">
+      <ol class="pipeline" id="pipeline" aria-label="Answer pipeline">
+        <li data-step="search" data-state="idle">
+          <span class="step-index">1</span>
+          <span>
+            <span class="step-name">Search</span>
+            <span class="step-detail" data-detail="search">Glean-style · local</span>
+          </span>
+        </li>
+        <li data-step="permissions" data-state="idle">
+          <span class="step-index">2</span>
+          <span>
+            <span class="step-name">Permissions</span>
+            <span class="step-detail" data-detail="permissions">Role filter</span>
+          </span>
+        </li>
+        <li data-step="claude" data-state="idle">
+          <span class="step-index">3</span>
+          <span>
+            <span class="step-name">Claude</span>
+            <span class="step-detail" data-detail="claude">Sonnet 5.5</span>
+          </span>
+        </li>
+        <li data-step="answer" data-state="idle">
+          <span class="step-index">4</span>
+          <span>
+            <span class="step-name">Answer</span>
+            <span class="step-detail" data-detail="answer">Cited</span>
+          </span>
+        </li>
+      </ol>
+
+      <form id="ask-form" class="composer" novalidate>
+        <div class="role-row">
+          <div class="field-label" id="role-label">Viewing as</div>
+          <div class="seg" role="radiogroup" aria-labelledby="role-label">
+            <button type="button" data-role="sales" aria-pressed="true">Sales</button>
+            <button type="button" data-role="engineering" aria-pressed="false">Engineering</button>
+            <button type="button" data-role="hr" aria-pressed="false">HR</button>
+          </div>
+        </div>
+        <p id="persona" class="persona"></p>
+
+        <div class="ask-row">
+          <label class="sr-only" for="question">Ask the company</label>
+          <input id="question" name="question" maxlength="240" autocomplete="off" placeholder="Ask the company" aria-describedby="form-error">
+          <button class="primary" id="ask" type="submit">Ask</button>
+        </div>
+
+        <div class="chips" role="group" aria-label="Sample questions">
+          <button type="button" data-question="How much parental leave do we offer?">Parental leave</button>
+          <button type="button" data-question="What is the maximum discount a sales rep can offer?">Discount authority</button>
+          <button type="button" data-question="Who is on call for Hearthline Desk this week?">On-call this week</button>
+          <button type="button" data-question="What are the 2026 engineering salary bands?">Salary bands</button>
+          <button type="button" data-question="What is the CEO's personal cell phone number?">Not in the docs</button>
+        </div>
+
+        <details class="key-block" id="key-details">
+          <summary>Anthropic API key <span>blank runs the demo</span></summary>
+          <div class="key-row">
+            <label class="sr-only" for="api-key">Anthropic API key</label>
+            <input id="api-key" name="api-key" type="password" maxlength="200" autocomplete="off" spellcheck="false" placeholder="sk-ant-…" aria-describedby="remember-key">
+            <button class="ghost small" id="clear-key" type="button">Clear</button>
+          </div>
+          <label class="check" for="remember-key">
+            <input id="remember-key" type="checkbox">
+            <span>Remember on this browser</span>
+          </label>
+        </details>
+        <p id="form-error" class="form-error" role="alert"></p>
+      </form>
+    </div>
+
+    <div class="layout">
+      <div class="stage">
+        <section class="panel answer-panel" aria-labelledby="answer-heading">
+          <div id="answer-empty" class="empty-copy">
+            <p class="eyebrow">Answer</p>
+            <h2 id="answer-heading">A cited answer lands here.</h2>
+            <p>Ask a sample question. The reply uses only documents this role can open, with sources numbered beside it. If those documents do not contain the answer, it says so.</p>
+          </div>
+          <div id="answer-data" hidden>
+            <p class="asked" id="asked"></p>
+            <article class="paper" id="answer" tabindex="-1"></article>
+            <p id="answer-mode" class="mode"></p>
+          </div>
+        </section>
+
+        <section class="panel sources-panel" id="sources-panel" aria-labelledby="sources-heading">
+          <div id="sources-empty" class="empty-copy">
+            <p class="eyebrow">Retrieved sources</p>
+            <h2 id="sources-heading">Sources land here.</h2>
+            <p>Ranked sample documents, plus a note when permissions hold a match back.</p>
+          </div>
+          <div id="sources-data" hidden>
+            <div class="results-head">
+              <div>
+                <p class="eyebrow">Retrieved sources</p>
+                <h2 id="sources-title">Sources</h2>
+              </div>
+              <p id="sources-count" class="count"></p>
+            </div>
+            <ol id="results" class="results" aria-label="Ranked sources"></ol>
+            <div id="filtered-block" class="filtered-block">
+              <h3 id="filtered-heading">Filtered out</h3>
+              <p id="filtered-note" class="filtered-note"></p>
+              <ul id="filtered" class="filtered" aria-label="Documents filtered by permissions"></ul>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <details class="plug">
+      <summary>How production would use Glean</summary>
+      <p>In production the search step is Glean’s Search API, called with the signed-in person’s bearer token, so hits stay limited to documents that person can open. Number those hits the same way and pass the snippets to Claude with the prompt below. Glean’s Chat API is the other path, if Glean should draft the answer instead of Claude. This page ranks a bundled corpus in the browser and applies the role filter locally. It does not contact Glean. The sample files ship with the page, so the filter demonstrates retrieval, and is not an access-control boundary.</p>
+    </details>
+
+    <section class="prompt-wrap" id="prompt-section" hidden aria-label="Request sent to Claude">
+      <details id="prompt-details">
+        <summary>Exact request</summary>
+        <p id="prompt-note" class="hint"></p>
+        <pre id="headers-view" class="code"></pre>
+        <pre id="prompt-view" class="code"></pre>
+      </details>
+    </section>
+
+    <p class="sr-only" id="live" aria-live="polite"></p>
+
+    <footer class="site-footer">
+      <p>Built by <a href="https://x.com/BuiltByAmos" rel="noopener noreferrer">@BuiltByAmos</a> with AI</p>
+      <p>Hearthline Systems and every document here are fictional. A pasted API key stays in this browser.</p>
+    </footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
