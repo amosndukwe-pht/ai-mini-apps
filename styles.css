@@ -190,3 +190,11 @@ h1 {
   .open { justify-self: start; }
   .hero { padding-top: 40px; }
 }
+
+.pipemark {
+  grid-area: donut;
+  width: 84px;
+  height: 84px;
+  align-self: center;
+  justify-self: end;
+}
