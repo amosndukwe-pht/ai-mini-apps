@@ -1225,7 +1225,6 @@ globalThis.OnboardingBuddy = (() => {
         addCites(cites, numbers);
       }
       fillMode($("#draft-mode"), mode);
-      $("#draft-text").focus();
     }
 
     function showNeedKey(kind, person) {

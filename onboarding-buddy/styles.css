@@ -17,6 +17,11 @@
 
 html, body { margin: 0; padding: 0; }
 
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(228, 181, 106, 0.4) transparent;
+}
+
 body {
   min-height: 100vh;
   font-family: var(--sans);
@@ -256,10 +261,10 @@ h3 { margin: 0; font-size: 22px; }
   gap: 8px;
 }
 
-.action-row { flex-wrap: wrap; }
+.action-row { flex-direction: column; }
 
 .action-row .primary,
-.action-row .ghost { flex: 1 1 180px; }
+.action-row .ghost { width: 100%; }
 
 .ask-row { margin-top: 10px; }
 .ask-row input { flex: 1; min-width: 0; }
