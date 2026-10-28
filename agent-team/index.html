@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Map an AI agent team: who owns each job, which tools they can touch, and which actions wait for a person.">
+  <meta name="theme-color" content="#0e0d0b">
+  <title>AI Agent Team — Org Chart</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23110e0a'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23e4b56a' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <a class="brand" href="../">
+        <span class="mark" aria-hidden="true">A</span>
+        <span>
+          <strong>BuiltByAmos</strong>
+          <span>Weekly apps</span>
+        </span>
+      </a>
+      <a class="back" href="../">All apps</a>
+    </header>
+
+    <section class="intro">
+      <div>
+        <p class="eyebrow">02 · Weekly app</p>
+        <h1>AI Agent Team</h1>
+        <p class="dek">Who owns the job, which tools they can touch, and where you still have to say yes.</p>
+      </div>
+      <div class="toolbar">
+        <button class="primary" id="export-png" type="button">Export PNG</button>
+        <button class="ghost" id="reset-team" type="button">Reset</button>
+      </div>
+    </section>
+
+    <div class="workspace">
+      <form id="agent-form" class="panel editor" novalidate>
+        <div class="field owner-row">
+          <label for="owner-name">Human owner</label>
+          <input id="owner-name" name="owner" maxlength="40" autocomplete="off" placeholder="Your name">
+        </div>
+
+        <div class="form-head">
+          <h2 id="form-heading">Add an agent</h2>
+          <button class="text-btn" id="cancel-edit" type="button" hidden>Cancel</button>
+        </div>
+
+        <div class="pair">
+          <div class="field">
+            <label for="agent-name">Name</label>
+            <input id="agent-name" name="name" maxlength="48" autocomplete="off" placeholder="Name" aria-describedby="form-error">
+          </div>
+          <div class="field">
+            <label for="agent-job">Job it owns</label>
+            <input id="agent-job" name="job" maxlength="80" autocomplete="off" placeholder="One job">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-label"><span id="tools-label">Tools it can touch</span></div>
+          <div class="chips" id="tool-chips" role="group" aria-labelledby="tools-label"></div>
+          <div class="add-row">
+            <input id="custom-tool" maxlength="32" autocomplete="off" placeholder="Add a tool" aria-label="Custom tool">
+            <button class="ghost small" id="add-tool" type="button">Add</button>
+          </div>
+          <div class="chips custom-chips" id="custom-tools"></div>
+        </div>
+
+        <div class="field">
+          <div class="field-label"><span id="approval-label">Needs your approval first</span></div>
+          <div class="chips" id="approval-chips" role="group" aria-labelledby="approval-label"></div>
+          <div class="add-row">
+            <input id="custom-approval" maxlength="40" autocomplete="off" placeholder="Other approval" aria-label="Other approval">
+            <button class="ghost small" id="add-approval" type="button">Add</button>
+          </div>
+          <div class="chips custom-chips" id="custom-approvals"></div>
+        </div>
+
+        <p id="form-error" class="form-error" role="alert"></p>
+        <div class="form-actions">
+          <button class="primary" id="save-agent" type="submit">Add agent</button>
+          <button class="text-btn danger" id="delete-agent" type="button" hidden>Delete agent</button>
+        </div>
+
+        <div class="handoff-block">
+          <h2 id="handoffs-heading">Handoffs</h2>
+          <ul id="handoff-list" aria-labelledby="handoffs-heading"></ul>
+        </div>
+      </form>
+
+      <div class="stage">
+        <section id="warnings" class="warnings" aria-live="polite" aria-labelledby="warnings-heading"></section>
+
+        <div class="chart-head">
+          <div>
+            <p class="eyebrow">Org chart</p>
+            <h2 id="chart-title">Team map</h2>
+          </div>
+          <button class="ghost" id="draw-handoff" type="button" aria-pressed="false">Draw handoff</button>
+        </div>
+        <p id="draw-hint" class="hint" aria-live="polite"></p>
+
+        <div class="chart-scroll" id="chart-scroll">
+          <div id="chart" class="chart">
+            <svg id="edges" class="edges" aria-hidden="true"></svg>
+            <div id="levels" class="levels"></div>
+          </div>
+        </div>
+        <p id="chart-summary" class="sr-only"></p>
+
+        <p class="legend">
+          <span><i class="swatch report" aria-hidden="true"></i> Reports to you</span>
+          <span><i class="swatch handoff" aria-hidden="true"></i> Handoff</span>
+        </p>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <p>Built by <a href="https://x.com/BuiltByAmos" rel="noopener noreferrer">@BuiltByAmos</a> with AI</p>
+      <p>A planning sketch saved in this browser. It does not connect to your tools.</p>
+    </footer>
+  </div>
+  <p class="sr-only" id="live" aria-live="polite"></p>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -35,6 +35,9 @@ jobs:
           test -f _site/.nojekyll
           test -f _site/index.html
           test -f _site/keto-planner/index.html
+          test -f _site/agent-team/index.html
+          test -f _site/agent-team/app.js
+          test -f _site/agent-team/styles.css
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

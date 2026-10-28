@@ -165,6 +165,13 @@ h1 {
   align-self: center;
 }
 
+.orgmark {
+  grid-area: donut;
+  width: 84px;
+  height: 84px;
+  align-self: center;
+}
+
 .site-footer {
   margin-top: 48px;
   padding-top: 18px;
