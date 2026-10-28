@@ -3,3 +3,4 @@ node_modules/
 *.mp4
 !assets/social/keto-demo.mp4
 *.webm
+!assets/social/meeting-prep-demo.mp4

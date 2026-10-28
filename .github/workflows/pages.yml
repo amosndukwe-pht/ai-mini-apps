@@ -32,6 +32,9 @@ jobs:
         run: |
           mkdir -p _site
           rsync -a --exclude '.git/' --exclude '.github/' --exclude '_site/' ./ _site/
+          test -f _site/meeting-prep/index.html
+          test -f _site/meeting-prep/app.js
+          test -f _site/meeting-prep/styles.css
           test -f _site/.nojekyll
           test -f _site/index.html
           test -f _site/keto-planner/index.html

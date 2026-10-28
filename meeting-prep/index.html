@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Search a fictional sample corpus, then have Claude write a one-page meeting brief with citations. Bring your own Anthropic key, or use the demo brief.">
+  <meta name="theme-color" content="#0e0d0b">
+  <title>Meeting Prep — Search, then a cited brief</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23110e0a'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23e4b56a' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <a class="brand" href="../">
+        <span class="mark" aria-hidden="true">A</span>
+        <span>
+          <strong>BuiltByAmos</strong>
+          <span>Weekly apps</span>
+        </span>
+      </a>
+      <a class="back" href="../">All apps</a>
+    </header>
+
+    <section class="intro">
+      <p class="eyebrow">03 · Weekly app</p>
+      <h1>Meeting Prep</h1>
+      <p class="dek">Retrieve the internal notes, then have Claude write a one-page brief that cites them.</p>
+    </section>
+
+    <p class="sample-flag">
+      <strong>Sample data.</strong>
+      Glean-style search over fictional documents for a fictional firm, Northline Partners. This page does not call Glean.
+    </p>
+
+    <div class="pipeline-wrap">
+      <ol class="pipeline" id="pipeline" aria-label="Brief pipeline">
+        <li data-step="search" data-state="idle">
+          <span class="step-index">1</span>
+          <span>
+            <span class="step-name">Search</span>
+            <span class="step-detail" data-detail="search">Glean-style · local</span>
+          </span>
+        </li>
+        <li data-step="retrieve" data-state="idle">
+          <span class="step-index">2</span>
+          <span>
+            <span class="step-name">Retrieve</span>
+            <span class="step-detail" data-detail="retrieve">Top snippets</span>
+          </span>
+        </li>
+        <li data-step="claude" data-state="idle">
+          <span class="step-index">3</span>
+          <span>
+            <span class="step-name">Claude</span>
+            <span class="step-detail" data-detail="claude">Sonnet 5.5</span>
+          </span>
+        </li>
+        <li data-step="brief" data-state="idle">
+          <span class="step-index">4</span>
+          <span>
+            <span class="step-name">Brief</span>
+            <span class="step-detail" data-detail="brief">Cited page</span>
+          </span>
+        </li>
+      </ol>
+    </div>
+
+    <div class="layout">
+      <form id="prep-form" class="panel" novalidate>
+        <div class="field">
+          <label for="client">Client or project</label>
+          <input id="client" name="client" maxlength="80" autocomplete="off" placeholder="Client name" aria-describedby="form-error">
+        </div>
+        <div class="chips" role="group" aria-label="Sample clients">
+          <button type="button" data-client="Harborline Logistics">Harborline Logistics</button>
+          <button type="button" data-client="Copperline Credit Union">Copperline Credit Union</button>
+          <button type="button" data-client="Fieldnote Studio">Fieldnote Studio</button>
+        </div>
+
+        <div class="pair">
+          <div class="field">
+            <label for="goal">Meeting goal <span class="optional">Optional</span></label>
+            <input id="goal" name="goal" maxlength="160" autocomplete="off" placeholder="Renewal check-in">
+          </div>
+          <div class="field">
+            <label for="attendees">Attendees <span class="optional">Optional</span></label>
+            <input id="attendees" name="attendees" maxlength="160" autocomplete="off" placeholder="Priya Raman, Ellis Cho">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="api-key">Anthropic API key</label>
+          <div class="key-row">
+            <input id="api-key" name="api-key" type="password" maxlength="200" autocomplete="off" spellcheck="false" placeholder="sk-ant-…  blank runs the demo" aria-describedby="remember-key">
+            <button class="ghost small" id="clear-key" type="button">Clear</button>
+          </div>
+          <label class="check" for="remember-key">
+            <input id="remember-key" type="checkbox">
+            <span>Remember on this browser</span>
+          </label>
+        </div>
+
+        <p id="form-error" class="form-error" role="alert"></p>
+        <div class="actions">
+          <button class="primary" id="prepare" type="submit">Prepare demo brief</button>
+          <button class="ghost" id="search-only" type="button">Search only</button>
+        </div>
+
+        <details class="plug">
+          <summary>How this would call Glean</summary>
+          <p>In production the search step is Glean’s Platform Search API: <code>POST /api/search</code>, with the signed-in person’s bearer token and the <code>SEARCH</code> scope, so results stay limited to what that person can open. Number the hits the same way and pass the snippets to Claude. Glean Chat is a separate call, if you want Glean to draft instead. This page ranks a bundled corpus in the browser and does not contact Glean.</p>
+        </details>
+      </form>
+
+      <section class="panel results-panel" id="results-panel" aria-labelledby="results-heading">
+        <div id="results-empty" class="empty-copy">
+          <p class="eyebrow">Retrieved sources</p>
+          <h2 id="results-heading">Notes land here.</h2>
+          <p>Enter a sample client. You’ll get ranked emails, tickets, notes, a contract summary, and Slack-style threads, each with the reason it matched.</p>
+        </div>
+        <div id="results-data" hidden>
+          <div class="results-head">
+            <div>
+              <p class="eyebrow">Retrieved sources</p>
+              <h2 id="results-title">Sources</h2>
+            </div>
+            <p id="results-count" class="count"></p>
+          </div>
+          <p id="results-why" class="hint"></p>
+          <ol id="results" class="results" aria-label="Ranked sources"></ol>
+        </div>
+      </section>
+    </div>
+
+    <section class="brief-wrap" id="brief-section" hidden aria-labelledby="brief-heading">
+      <div class="brief-bar">
+        <div>
+          <p class="eyebrow" id="brief-kicker">One-page brief</p>
+          <h2 id="brief-heading">Brief</h2>
+        </div>
+        <div class="actions">
+          <button class="primary" id="copy-brief" type="button">Copy brief</button>
+          <button class="ghost" id="download-brief" type="button">Download Markdown</button>
+        </div>
+      </div>
+      <p id="brief-mode" class="mode"></p>
+      <article class="paper" id="brief" tabindex="-1"></article>
+    </section>
+
+    <section class="prompt-wrap" id="prompt-section" hidden aria-label="Request sent to Claude">
+      <details id="prompt-details">
+        <summary id="prompt-summary">Exact request</summary>
+        <p id="prompt-note" class="hint"></p>
+        <pre id="headers-view" class="code"></pre>
+        <pre id="prompt-view" class="code"></pre>
+      </details>
+    </section>
+
+    <p class="sr-only" id="live" aria-live="polite"></p>
+
+    <footer class="site-footer">
+      <p>Built by <a href="https://x.com/BuiltByAmos" rel="noopener noreferrer">@BuiltByAmos</a> with AI</p>
+      <p>Sample documents are fictional. A pasted API key stays in this browser.</p>
+    </footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
